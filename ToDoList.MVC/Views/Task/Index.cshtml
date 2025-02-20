@@ -1,0 +1,126 @@
+﻿@{
+	ViewData["Title"] = "ToDoList";
+	var statusTasks = Enum.GetValues(typeof(EnumStatusTask))
+						.Cast<EnumStatusTask>()
+						.ToDictionary(e => (int)e, e => e.ToString());
+}
+
+@using ToDoList.Core.Enums;
+@model Dictionary<int, List<ToDoList.Core.Entities.Task>>
+
+<head>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+</head>
+
+<div class="mb-3">
+	<form onsubmit="return createTask(event);" class="d-flex flex-column">
+		<input type="text" id="title" class="form-control mb-2" placeholder="Título da Tarefa" required maxlength="50">
+		<textarea id="description" class="form-control mb-2" placeholder="Descrição da Tarefa" required maxlength="500"></textarea>
+		<button type="submit" class="btn btn-primary">Adicionar</button>
+	</form>
+</div>
+
+<br />
+<div id="message"></div>
+<br />
+
+<div class="row">
+	@foreach (var column in statusTasks)
+	{
+		<div class="col-md-4">
+			<div class="card">
+				<div class="card-header text-center fw-bold">
+					@column.Value
+				</div>
+				<div class="card-body">
+					<div class="task-list" id="@column.Key">
+						@foreach (var task in Model.ContainsKey(column.Key) ? Model[column.Key] : new List<ToDoList.Core.Entities.Task>())
+						{
+							<div class="task d-flex flex-column p-2 mb-2 bg-light rounded" data-id="@task.Id">
+								<div class="d-flex justify-content-between align-items-center flex-wrap">
+									<span class="fw-bold text-truncate" style="max-width: 80%;">@task.Title</span>
+									<form method="post" action="/Task/Delete" class="d-inline">
+										<input type="hidden" name="id" value="@task.Id" />
+										<button type="submit" class="btn btn-sm btn-danger">X</button>
+									</form>
+								</div>
+
+								<p class="mb-0">@task.Description</p>
+								<br />
+								<small class="text-muted">Criado em: @task.CreatedDate.ToString("dd/MM/yyyy HH:mm")</small>
+
+								@if (task.FinishDate != null)
+								{
+									<small class="text-success">Finalizado em: @task.FinishDate?.ToString("dd/MM/yyyy HH:mm")</small>
+								}
+							</div>
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+</div>
+
+<script>
+	document.querySelectorAll('.task-list').forEach(list => {
+		new Sortable(list, {
+			group: 'tasks',
+			animation: 150,
+			onEnd: function (evt) {
+				const taskId = evt.item.getAttribute('data-id');
+				const status = evt.to.closest('.task-list').id;
+
+				updateTask(taskId, status);
+			}
+		});
+	});
+
+	function createTask(event) {
+		const title = document.getElementById("title").value;
+		const description = document.getElementById("description").value;
+
+		$.ajax({
+			type: "POST",
+			url: '@Url.Action("Create", "Task")',
+			data: {
+				title: title,
+				description: description,
+			},
+			success: function (response) {
+				if (response.success) {
+					window.location.href = '/task';
+				} else {
+					$('#message').html('<div class="alert alert-danger">Falha ao criar tarefa: ' + response.message + '</div>');
+				}
+			},
+			error: function (xhr, status, error) {
+				$('#message').html('<div class="alert alert-danger">Erro inesperado! Tente novamente.</div>');
+			}
+		});
+
+		return false;
+	}
+
+	function updateTask(taskId, status) {
+		debugger;
+		$.ajax({
+			type: "POST",
+			url: '@Url.Action("Update", "Task")',
+			data: {
+				taskId: taskId,
+				status: status,
+			},
+			success: function (response) {
+				if (response.success) {
+					window.location.href = '/task';
+				} else {
+					$('#message').html('<div class="alert alert-danger">Falha ao atualizar tarefa: ' + response.message + '</div>');
+				}
+			},
+			error: function (xhr, status, error) {
+				$('#message').html('<div class="alert alert-danger">Erro inesperado! Tente novamente.</div>');
+			}
+		});
+	}
+</script>

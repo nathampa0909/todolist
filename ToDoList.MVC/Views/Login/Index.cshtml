@@ -1,0 +1,121 @@
+﻿@{
+	ViewData["Title"] = "Login Page";
+}
+
+<div class="container mt-5">
+	<div class="row justify-content-center">
+		<div class="col-md-6">
+			<ul class="nav nav-tabs" id="authTabs">
+				<li class="nav-item">
+					<a class="nav-link active" id="login-tab" data-bs-toggle="tab" href="#login">Login</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="register-tab" data-bs-toggle="tab" href="#register">Registrar</a>
+				</li>
+			</ul>
+
+			<div class="tab-content p-4 border border-top-0">
+				<div class="tab-pane fade show active" id="login">
+					<h3 class="text-center">Login</h3>
+					<form id="loginForm">
+						<div class="mb-3">
+							<label class="form-label">Usuário</label>
+							<input type="text" name="username" id="username" class="form-control" required>
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label">Senha</label>
+							<input type="password" name="password" id="password" class="form-control" required>
+						</div>
+
+						<button type="submit" class="btn btn-primary w-100">Entrar</button>
+					</form>
+				</div>
+
+				<div class="tab-pane fade" id="register">
+					<h3 class="text-center">Registrar</h3>
+					<form id="registerForm">
+						<div class="mb-3">
+							<label class="form-label">Nome</label>
+							<input type="text" name="name" id="nameRegister" class="form-control" required>
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label">Usuário</label>
+							<input type="text" name="username" id="usernameRegister" class="form-control" required>
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label">Senha</label>
+							<input type="password" name="password" id="passwordRegister" class="form-control" required>
+						</div>
+						<button type="submit" class="btn btn-success w-100">Criar Conta</button>
+					</form>
+				</div>
+
+			</div>
+
+			<br />
+
+			<div id="message"></div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function () {
+		$('#loginForm').on('submit', function (e) {
+			e.preventDefault();
+
+			var username = $('#username').val();
+			var password = $('#password').val();
+
+			$.ajax({
+				type: "POST",
+				url: '@Url.Action("Login", "Login")',
+				data: {
+					username: username,
+					password: password
+				},
+				success: function (response) {
+					if (response.success) {
+						window.location.href = '/task';
+					} else {
+						$('#message').html('<div class="alert alert-danger">Falha no login: ' + response.message + '</div>');
+					}
+				},
+				error: function (xhr, status, error) {
+					$('#message').html('<div class="alert alert-danger">Erro inesperado! Tente novamente.</div>');
+				}
+			});
+		});
+
+		$('#registerForm').on('submit', function (e) {
+			e.preventDefault();
+
+			var name = $('#nameRegister').val();
+			var username = $('#usernameRegister').val();
+			var password = $('#passwordRegister').val();
+
+			$.ajax({
+				type: "POST",
+				url: '@Url.Action("Register", "Login")',
+				data: {
+					name: name,
+					username: username,
+					password: password
+				},
+				success: function (response) {
+					if (response.success) {
+						window.location.href = '/task';
+					} else {
+						$('#message').html('<div class="alert alert-danger">Falha no login: ' + response.message + '</div>');
+					}
+				},
+				error: function (xhr, status, error) {
+					$('#message').html('<div class="alert alert-danger">Erro inesperado! Tente novamente.</div>');
+				}
+			});
+		});
+	});
+</script>

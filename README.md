@@ -4,16 +4,19 @@ Este é um projeto de gerenciamento de tarefas desenvolvido com **.NET 9**, segu
 
 ## 🚀 Tecnologias Utilizadas  
 
-- **Back-end**: .NET 9, C#  
-- **Banco de Dados**: SQL Server  
+- **Back-end**: ASP Web API
+- **Front-end**: ASP MVC
+- **Linguagens**: C#, JavaScript
+- **Bibliotecas**: .NET 9, JQuery, Entity Framework
+- **Banco de Dados**: SQL Server
 - **Arquitetura**: SOLID, Clean Code, DDD  
 
 ## 📌 Funcionalidades  
 
-- Criar, editar e excluir tarefas  
-- Alterar o status das tarefas (pendente, em andamento, concluída)  
-- Listagem de tarefas organizadas  
-- Suporte para múltiplos usuários  
+- Criar, editar e excluir tarefas
+- Alterar o status das tarefas (pendente, em andamento, concluída)
+- Listagem de tarefas organizadas
+- Suporte para múltiplos usuários
 
 ## 🔧 Instalação e Execução  
 
@@ -55,5 +58,5 @@ Contribuições são bem-vindas! Siga as boas práticas e abra uma **issue** ou 
 
 ## 📜 Licença  
 
-Este projeto está sob a licença **MIT**.  
+Este projeto está sob a licença **Creative Commons Attribution-NonCommercial-NoDerivatives (CC BY-NC-ND)**.  
 
